@@ -1,0 +1,48 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                // namespace の自動設定
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                    
+                    // compileSdkVersionを34に設定（lStar問題の解決のため）
+                    compileSdkVersion 35
+                    
+                    // Java バージョンを1.8に統一（安定性のため）
+                    compileOptions {
+                        sourceCompatibility JavaVersion.VERSION_1_8
+                        targetCompatibility JavaVersion.VERSION_1_8
+                    }
+                }
+                
+                // Kotlin バージョンも1.8に統一
+                if (project.hasProperty('kotlin')) {
+                    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                        kotlinOptions {
+                            jvmTarget = '1.8'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

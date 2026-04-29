@@ -1,0 +1,11 @@
+{
+    "type": "geojson",
+    "data": {
+      "type": "FeatureCollection",
+      "features": []
+    },
+    "cluster": true,
+    "clusterMaxZoom": 14,
+    "clusterRadius": 50
+  }
+  
